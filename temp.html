@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/vue@3.0.2"></script>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="./style.css">
+    <title>Learning vue</title>
+</head>
+<body>
+    <h1>Hello, vue</h1>
+
+    <div id="app">
+        <div v-if="showBooks">
+            <p>{{ title }} - {{ author }} - {{ age }}</p>
+
+            <button v-on:click="age++">Increase age</button>
+            <button v-on:click="age--">Decrease age</button>
+        </div>
+
+        <div @click="changeTitle('Oathbringer')">Change book title</div>
+        
+        <button @click="toogleShowBooks">
+            <span v-if="showBooks"> Hide books </span>
+            <span v-else> Show books </span>
+        </button>
+
+        <div v-show="showBooks">currently showing books</div>
+    
+        <div class="box" @mouseover="handleEvent($event)">mouseover (enter)</div>
+        <div class="box">mouseleave</div>
+        <div class="box">double click</div>
+        <div class="box"></div>
+    </div>
+
+    <input type="date" value="1994-06-23"/>
+
+    <script src="app.js"></script>
+</body>
+</html>
