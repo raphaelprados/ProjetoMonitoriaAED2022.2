@@ -17,48 +17,43 @@
     <title>Learning vue</title>
 </head>
 <body>
-    <h1>Hello, vue</h1>
+    <h1>Demonstração de Estruturas de Dados</h1>
 
-    <nav class="navbar navbar-expand-sm navbar-dark bg-primary">
-        <a class="navbar-brand" href="#">Navbar</a>
-        <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavId" aria-controls="collapsibleNavId"
-            aria-expanded="false" aria-label="Toggle navigation"></button>
-        <div class="collapse navbar-collapse" id="collapsibleNavId">
-            <ul class="navbar-nav me-auto mt-2 mt-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link active" href="#" aria-current="page">Encadeada<span class="visually-hidden">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Duplamente Encadeada</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Circular</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Pilha</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Fila</a>
-                </li>
-                <li class="nav-item">
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" value="" id="">
-                      <label class="form-check-label" for="" style="color: white;">
-                        Em Ordem
-                      </label>
-                    </div>
-                </li>
-            </ul>
-            <form class="d-flex my-2 my-lg-0">
-                <input class="form-control me-sm-2" type="text" placeholder="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form>
+    <div id="app">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <label class="input-group-text" for="inputGroupSelect">Tipo de Dado</label>
+            </div>
+            <select v-model="selected" @change="validateChange()" class="form-control" id="inputGroupSelect">
+                <option value="selecione" selected>Selecione</option>
+                <option value="simples">Lista Ligada Simples</option>
+                <option value="dupla">Lista Ligada Dupla</option>
+                <option value="circular">Lista Circular</option>
+                <option value="pilha">Pilha</option>
+                <option value="fila">Fila</option>
+            </select>
         </div>
-    </nav>
+
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <label class="input-group-text" for="inputNumber">Chave</label>
+            </div>
+            <input v-model="key" @keyup.enter="push($event)" type="number" id="inputNumber">
+            <div class="input-group-prepend">
+                <button @click="push($event)" class="btn btn-outline-secondary" type="button">Inserir</button>
+            </div>
+        </div>
+        <div v-if="message" class="alert alert-warning" role="alert">
+            Aviso: {{ message }}
+        </div>
+        <br>
+        <li v-for="node in arr">
+            {{ node }}
+        </li>
+        <br>
+        <p>Organização: {{ listaLigada }}</p>
+    </div>
 
     <script src="app.js"></script>
 </body>
-<footer>
-    <p>Disponível em: </p>
-</footer>
 </html>
