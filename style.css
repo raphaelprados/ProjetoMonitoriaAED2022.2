@@ -7,3 +7,65 @@
     display: inline-block;
     border: solid 1px black;
 }
+
+.date-grid {
+    width: 100px;
+    height: 100px;
+    background: #eee;
+    display: flex;
+    flex-direction: column;
+}
+  
+.node {
+    width: 100%;
+    height: 100%;
+    background: #e9ecef;
+    border: none;
+    padding: 0;
+  }
+  
+time {
+    display: block;
+    height: 75%;
+    font-size: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+  
+.smallHolder {
+    width: 100%;
+    height: 25%;
+    display: flex;
+}
+  
+.smallHolder>div {
+    width: 25%;
+    height: 100%;
+    flex-shrink: 0;
+    flex-grow: 1;
+}
+  
+.next {
+    background: #0060df;
+}
+  
+.last {
+    background: #d53343;
+}
+  
+.small3 {
+    background: #f07;
+}
+  
+.small4 {
+    background: #ba0;
+}
+
+.bi-arrow-down {
+    color: white;
+}
+
+.bi-arrow-up {
+    color: white;
+}
