@@ -19,75 +19,104 @@
     <title>Learning vue</title>
 </head>
 <body>
-    <h1>Demonstração de Estruturas de Dados</h1>
+    <h1 style="text-align: center;">Demonstração de Estruturas de Dados</h1>
 
     <div id="app">
-        <div class="input-group mb-3" >
-            <div class="input-group-prepend">
-                <label class="input-group-text" for="inputGroupSelect">Tipo de Dado</label>
-            </div>
-            <select v-model="selected" @change="validateChange()" id="inputGroupSelect">
-                <option value="selecione" selected>Selecione</option>
-                <option value="simples">Lista Ligada Simples</option>
-                <option value="dupla">Lista Ligada Dupla</option>
-                <option value="circular">Lista Circular</option>
-                <option value="pilha">Pilha</option>
-                <option value="fila">Fila</option>
-            </select>
-        </div>
-
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <div class="input-group-text">
-                    <input v-model="inputDelete" @click="updateButton" type="checkbox" aria-label="Checkbox for the insertion and deletion options">
-                </div>
-            </div>
-            <div class="input-group-prepend">
-                <label class="input-group-text" for="inputNumber">Chave</label>
-            </div>
-            <input v-model="key" @keyup.enter="mediator($event)" :readonly="readOnlyInput && inputDelete" type="number" id="inputNumber">
-            <div class="input-group-prepend">
-                <button v-if="!inputDelete" @click="push($event)" class="btn btn-primary" type="button">{{ buttonMessage }}</button>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="input-group mb-3" >
+                    <label class="input-group-text" for="inputGroupSelect">Tipo de Dado</label>
+                    <select class="form-select" v-model="selected" @change="validateChange()" id="inputGroupSelect">
+                        <option value="selecione" selected>Selecione</option>
+                        <option value="simples">Lista Ligada Simples</option>
+                        <option value="dupla">Lista Ligada Dupla</option>
+                        <option value="circular">Lista Circular</option>
+                        <option value="pilha">Pilha</option>
+                        <option value="fila">Fila</option>
+                    </select>
+                    <div class="input-group-text">
+                        <input v-model="inputDelete" @click="updateButton" class="form-check-input mt-0" type="checkbox">
+                    </div>
+                    <input v-model="key" @keyup.enter="mediator($event)" :readonly="readOnlyInput && inputDelete" type="number" 
+                            class="form-control" id="inputNumber">
+                    <button v-if="!inputDelete" @click="push($event)" class="btn btn-primary" type="button">{{ buttonMessage }}</button>
                 <button v-else @click="pop($event)" class="btn btn-danger" type="button">{{ buttonMessage }}</button>
+                </div>
+                
             </div>
         </div>
-
         <div v-if="message" class="alert alert-warning" role="alert">
             Aviso: {{ message }}
         </div>
         <br>
-        <li v-for="node in arr">
-            <div class="date-grid">
-                <button class="node" v-if="selected == 'simples' || selected == 'pilha'" data-toggle="tooltip" data-placement="right" 
-                        title="Valor: {{ node }}">
-                    <time>{{ node }}</time>
-                    <div class="smallHolder">
-                        <div class="next">
-                            <i class="bi bi-arrow-down"></i>
+        <div class="container">
+            <div class="row justify-content-evenly">
+                <div class="col">
+                    <div class="row" v-for="node in arr">
+                        <div class="date-grid">
+                            <button class="node" v-if="selected == 'simples' || selected == 'pilha' || selected == 'fila'"
+                                    @click="selectNode(node)">
+                                <time>{{ node }}</time>
+                                <div class="smallHolder">
+                                    <div class="next">
+                                        <i class="bi bi-arrow-down"></i>
+                                    </div>
+                                </div>   
+                            </button>
+                            <button class="node" v-if="selected == 'dupla'" @click="selectNode(node)">
+                                <div class="smallHolder">
+                                    <div class="last">
+                                        <i class="bi bi-arrow-up"></i>
+                                    </div>
+                                    <div class="next">
+                                        <i class="bi bi-arrow-down"></i>
+                                    </div>
+                                </div>   
+                                <time>{{ node }}</time>
+                                <div class="smallHolder">
+                                    <div class="last">
+                                        <i class="bi bi-arrow-up"></i>
+                                    </div>
+                                    <div class="next">
+                                        <i class="bi bi-arrow-down"></i>
+                                    </div>
+                                </div>   
+                            </button>
+                            <button class="node" v-if="selected == 'circular'" @click="selectNode(node)">
+                                <div class="smallHolder">
+                                    <div class="last">
+                                        <i class="bi bi-arrow-up"></i>
+                                    </div>
+                                    <div class="next">
+                                        <i class="bi bi-arrow-down"></i>
+                                    </div>
+                                </div>   
+                                <time>{{ node }}</time>
+                                <div class="smallHolder">
+                                    <div class="last">
+                                        <i class="bi bi-arrow-up"></i>
+                                    </div>
+                                    <div class="next">
+                                        <i class="bi bi-arrow-down"></i>
+                                    </div>
+                                </div>   
+                            </button>
                         </div>
-                    </div>   
-                </button>
-                <button class="node" v-if="selected == 'dupla'">
-                    <div class="smallHolder">
-                        <div class="last">
-                            <i class="bi bi-arrow-up"></i>
-                        </div>
-                        <div class="next">
-                            <i class="bi bi-arrow-down"></i>
-                        </div>
-                    </div>   
-                    <time>{{ node }}</time>
-                    <div class="smallHolder">
-                        <div class="last">
-                            <i class="bi bi-arrow-up"></i>
-                        </div>
-                        <div class="next">
-                            <i class="bi bi-arrow-down"></i>
-                        </div>
-                    </div>   
-                </button>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card">
+                        <h5 class="card-title">Valores do Nó:</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ selectedNode }}</h6>
+                        <p class="card-text">Na sua deleção: o nó de chave {{ selectedNode }}</p>
+                    </div>
+                </div>
             </div>
-        </li>    
+            
+        </div>
+        <div class="row align-items-start">
+            
+        </div>        
         <br>
         <p v-if="selected == 'simples'">Organização: {{ listaLigada }}</p>
         <!--- 

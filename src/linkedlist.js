@@ -60,11 +60,3 @@ function pop() {
     return null
 }
 
-push(2)
-push(7)
-push(11)
-push(29)
-console.log(toString())
-pop()
-pop()
-console.log(toString())

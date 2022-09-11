@@ -1,29 +1,34 @@
 
-// Implementação de lista ligada duplamente encadeada com cabeça
+// Implementação de uma fila com uma lista duplamente encadeada
 
 let head = {
     key: null,
-    next: null,
-    last: null
+    start: null,
+    end: null
 }
-head.next = head
-head.last = head
+head.start = head
+head.end = head
+
+function getEnd() {
+    if(head.end != head)
+        return head.end
+}
 
 function search(key) {
-    var p = head.next
+    var p = head.start
 
     while(p != head && p.key != key) 
-        p = p.next
+        p = p.start
     return p == head ? null : p;
 }
 
 function toString() {
-    var p = head.next
+    var p = head.start
     var str = "h,"
     
     while(p != head) {
         str += (p.key + ",")
-        p = p.next
+        p = p.start
     }
     str += "h"
     return str
@@ -32,20 +37,20 @@ function toString() {
 function push(key) {
     var newNode = {
         key: key,
-        next: head.next,
-        last: head
+        start: head.start,
+        end: head
     }
-    head.next.last = newNode
-    head.next = newNode
+    head.start.end = newNode
+    head.start = newNode
 }
 
 function pop() {
-    var p = head.last
+    var p = head.start
 
     if(p == head) 
         return null
-    head.last.last.next = head
-    head.last = p.last
-
+    p.start.end = p.end
+    p.end.start = p.start
     return p.key
 }
+

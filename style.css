@@ -1,19 +1,10 @@
-.box {
-    padding: 100px 0;
-    width: 400px;
-    text-align: center;
-    background: #ddd;
-    margin: 20px;
-    display: inline-block;
-    border: solid 1px black;
-}
 
 .date-grid {
-    width: 100px;
+    width: 120px;
     height: 100px;
-    background: #eee;
     display: flex;
     flex-direction: column;
+    text-align: center;
 }
   
 .node {
@@ -22,6 +13,7 @@
     background: #e9ecef;
     border: none;
     padding: 0;
+    text-align: center;
   }
   
 time {
@@ -31,12 +23,14 @@ time {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    text-align: center;
 }
   
 .smallHolder {
     width: 100%;
     height: 25%;
     display: flex;
+    text-align: center;
 }
   
 .smallHolder>div {
