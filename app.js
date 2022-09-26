@@ -11,12 +11,12 @@ const app = Vue.createApp({
             checked: false,
             message: '',
             selected: 'selecione',
-            selectedNode: null,
+            selectedNode: -1,
             nodeKeyHolder: -1,
             key: '',
-            listaLigada: {count: 0, head: {key: null, next: null}},
-            listaDupla: {count: 0, head: {key: null, next: null, last: null}},
-            listaCircular: {count: 0, head: {key: null, next: null, last: null}},
+            listaLigada: {count: 0, head: {key: 'head', next: null}},
+            listaDupla: {count: 0, head: {key: 'head', next: null, last: null}},
+            listaCircular: {count: 0, head: {key: 'head', next: null, last: null}},
             pilha: {count: 0, head: {key: null, next: null}},
             fila: {count: 0, head: {key: null, next: null, last: null}},
             arr: [],
@@ -76,6 +76,9 @@ const app = Vue.createApp({
                     this.selected == 'circular' ? this.listaCircular.count++ : this.fila.count++
                     break
             }
+            // Atualiza o nodo selecionado nas informacoes de nodo após uma inserção
+            this.selectNode(this.selectedNode != -1 ? this.selectedNode.key : -1)
+            console.log(this.selectedNode)
             this.arrayUpdater(head)
             // Reseta o valor para impedir que o usuário insira o mesmo sem querer
             this.key = null
@@ -200,16 +203,25 @@ const app = Vue.createApp({
             this.inputDelete != this.inputDelete
         },
         selectNode(nodeValue) {
+            if(nodeValue == -1)
+                return
             this.selectedNode = null
             head = null
             temp = null
+            count = 0
+            // Elimina os casos onde esses elementos são clicados na pilha e na fila
+            if(nodeValue == 'topo' || nodeValue == 'inicio' || nodeValue == 'fim') {
+                this.selectedNode = -1
+                return
+            }
             // Garante que o evento não ocorre se o usuário clicar no botão da cabeça
-            if(nodeValue == 'head') {
+            if(nodeValue == 'head' && this.selected != 'circular') {
                 this.selected == 'simples' ? head = this.listaLigada.head :
                         this.selected == 'pilha' ? head = this.pilha.head : head = this.listaDupla.head
-                this.selectedNode = {key: null, next: head.next ? head.next.key : 'null'}
-                if(this.selected == 'dupla' || this.selected == 'fila')
+                this.selectedNode = {key: 'head', next: head.next ? head.next.key : 'null'}
+                if(this.selected == 'dupla' || this.selected == 'fila'  )
                     this.selectedNode.last = head.last ? head.last.key : 'null'
+                return
             } 
             // Pesquisa do nó nas estruturas de dados
             switch(this.selected) {
@@ -219,26 +231,37 @@ const app = Vue.createApp({
                     this.selected == 'simples' ? head = this.listaLigada.head :
                         this.selected == 'pilha' ? head = this.pilha.head : head = this.listaDupla.head
                     temp = head.next
-                    while(temp && temp.key != nodeValue) 
+                    while(temp && temp.key != nodeValue)  {
                         temp = temp.next
+                        count++
+                    }
                     break
                 case 'fila':
                 case 'circular':
                     this.selected == 'fila' ? head = this.fila.head : head = this.listaCircular.head
                     temp = head.next
-                    while(temp != head && temp.key != nodeValue) 
+                    while(temp != head && temp.key != nodeValue) {
                         temp = temp.next
+                        count++
+                    }
                     break
             }
-            if(temp != null) 
+            // Criando o objeto de retorno 
+            if(temp != null) {
                 this.selectedNode = {
-                    key: temp.key, 
-                    next: temp.next ? temp.next.key : null,
-                    last: this.selected != 'pilha' && this.selected != 'simples' && temp.last ? temp.last.key : null
+                    key: temp.key
                 }
+                console.log(count);
+                if(this.selected != 'pilha' && this.selected != 'fila')
+                    this.selectedNode.next = temp.next ? temp.next.key : null
+                else
+                    this.selectedNode.position = this.selected == 'pilha' ? count : this.arr.length - count - 3
+                if(this.selected == 'dupla' || this.selected == 'circular')
+                    this.selectedNode.last = temp.last ? temp.last.key : null
+            }
             else
-                return null
-                
+                this.selectedNode = 'null'
+            console.log(this.selectedNode)                
         },
         mediator(e) {
             // Possibilita transformar o botão de inserir/deletar
@@ -250,14 +273,8 @@ const app = Vue.createApp({
         arrayUpdater(head) {
             dataStructure = null
             // Atualização da Array de referência
-            try {
-                temp = head.next
-                if(temp == head)
-                    return
-            } catch(e) {
-                console.log(e.message)
-                return
-            }
+            temp = head.next
+            console.log('entrou');
             i = 0
             // Reseta a array
             this.arr.length = 0
@@ -296,8 +313,10 @@ const app = Vue.createApp({
             }
             // Atualiza o botão de esvaziar estrutura de dado
             this.updateClearBtn(dataStructure)
+            console.log(this.arr)
         },
         pointerCall(ptr, node) {
+            returnValue = null
             if(ptr == 1)
                 this.selectNode(this.arr[this.arr.findIndex(element => element == node) + 1])
             else
