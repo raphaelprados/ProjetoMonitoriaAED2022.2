@@ -5,10 +5,14 @@ const app = Vue.createApp({
             inputDelete: false,
             readOnlyInput: false,
             buttonMessage: 'Inserir',
+            cleanBtnColor: 'white',
+            cleanBtnText: 'black',
+            direction: 'vertical',
             checked: false,
             message: '',
             selected: 'selecione',
             selectedNode: null,
+            nodeKeyHolder: -1,
             key: '',
             listaLigada: {count: 0, head: {key: null, next: null}},
             listaDupla: {count: 0, head: {key: null, next: null, last: null}},
@@ -16,6 +20,7 @@ const app = Vue.createApp({
             pilha: {count: 0, head: {key: null, next: null}},
             fila: {count: 0, head: {key: null, next: null, last: null}},
             arr: [],
+            neighboorNodes: [],
             cur: null
         }
     },
@@ -32,7 +37,6 @@ const app = Vue.createApp({
                 case '':
                 case 'selecione':
                     this.message = 'Selecione uma opção de tipo de dado!'
-                    console.log(this.message)
                     break;
                 case 'simples':
                 case 'pilha':
@@ -83,7 +87,7 @@ const app = Vue.createApp({
                 case '':
                 case 'selecione':
                     this.message = 'Selecione uma opção de tipo de dado!'
-                    console.log(this.message)
+
                     break;
                 case 'simples':
                     head = this.listaLigada.head
@@ -97,7 +101,6 @@ const app = Vue.createApp({
                     // Verifica se o item pertence à lista ligada
                     if(!p) {
                         this.message = 'O item buscado não pertence à lista!'
-                        console.log(this.message)
                     }
                     else if(!ant)
                         head.next = p.next
@@ -160,9 +163,6 @@ const app = Vue.createApp({
             this.key = null
             if(this.selected != 'selecione')
                 this.message = ''
-            console.log("A")
-            console.log(this.fila)
-            console.log(this.arr)
         },
         validateChange() {
             if(this.selected != 'selecione')
@@ -175,23 +175,25 @@ const app = Vue.createApp({
             // Define que tipo de dado a cabeca vai referenciar para montar a array de impressão de dados
             switch(this.selected) {
                 case 'simples':
-                    head = this.listaLigada.head
+                    dataStructure = this.listaLigada
                     break
                 case 'dupla':
-                    head = this.listaDupla.head
+                    dataStructure = this.listaDupla
                     break
                 case 'circular':
-                    head = this.listaCircular.head
+                    dataStructure = this.listaCircular
                     break
                 case 'fila':
-                    head = this.fila.head
+                    dataStructure = this.fila
                     break
                 case 'pilha':
-                    head = this.pilha.head
+                    dataStructure = this.pilha
                     break
             }
+            // Define a cor do botão de esvaziar a estrutura de dados
+            this.updateClearBtn(dataStructure)
             // Atualiza array 
-            this.arrayUpdater(head)
+            this.arrayUpdater(dataStructure.head)
         },
         updateButton() {
             this.inputDelete ? this.buttonMessage = 'Inserir' : this.buttonMessage = 'Deletar'
@@ -201,10 +203,14 @@ const app = Vue.createApp({
             this.selectedNode = null
             head = null
             temp = null
-            console.log("click identified");
             // Garante que o evento não ocorre se o usuário clicar no botão da cabeça
-            if(nodeValue == 'head')
-                return
+            if(nodeValue == 'head') {
+                this.selected == 'simples' ? head = this.listaLigada.head :
+                        this.selected == 'pilha' ? head = this.pilha.head : head = this.listaDupla.head
+                this.selectedNode = {key: null, next: head.next ? head.next.key : 'null'}
+                if(this.selected == 'dupla' || this.selected == 'fila')
+                    this.selectedNode.last = head.last ? head.last.key : 'null'
+            } 
             // Pesquisa do nó nas estruturas de dados
             switch(this.selected) {
                 case 'pilha':
@@ -224,13 +230,15 @@ const app = Vue.createApp({
                         temp = temp.next
                     break
             }
-            console.log(temp)
-            console.log(this.selectedNode)
-            this.selectedNode = {
-                key: temp.key, 
-                next: temp.next ? temp.next.key : null,
-                last: this.selected != 'pilha' && this.selected != 'simples' && temp.last ? temp.last.key : null
-            }
+            if(temp != null) 
+                this.selectedNode = {
+                    key: temp.key, 
+                    next: temp.next ? temp.next.key : null,
+                    last: this.selected != 'pilha' && this.selected != 'simples' && temp.last ? temp.last.key : null
+                }
+            else
+                return null
+                
         },
         mediator(e) {
             // Possibilita transformar o botão de inserir/deletar
@@ -240,6 +248,7 @@ const app = Vue.createApp({
                 this.pop(e)
         },
         arrayUpdater(head) {
+            dataStructure = null
             // Atualização da Array de referência
             try {
                 temp = head.next
@@ -253,14 +262,84 @@ const app = Vue.createApp({
             // Reseta a array
             this.arr.length = 0
             while(temp && temp != head) {
-                console.log(temp.key)
                 this.arr[i] = temp.key
                 temp = temp.next
                 i++
             }   
             if(this.selected == 'fila')
                 this.arr.reverse()
-            this.arr.unshift('head')
+            switch(this.selected) {
+                case 'simples':
+                    this.arr.unshift('head')
+                    this.arr.push('null')
+                    dataStructure = this.listaLigada
+                    break
+                case 'circular':
+                    this.listaCircular.count == 0 ? this.arr.push('head') : this.arr.unshift('head')
+                    dataStructure = this.listaCircular
+                    break
+                case 'dupla':    
+                    this.arr.unshift('head')
+                    this.arr.unshift('null_a')
+                    this.arr.push('null_b')
+                    dataStructure = this.listaDupla
+                    break
+                case 'fila':
+                    this.arr.unshift('inicio')
+                    this.arr.push('fim')
+                    dataStructure = this.fila
+                    break
+                case 'pilha':
+                    this.arr.unshift('topo')
+                    dataStructure = this.pilha
+                    break
+            }
+            // Atualiza o botão de esvaziar estrutura de dado
+            this.updateClearBtn(dataStructure)
+        },
+        pointerCall(ptr, node) {
+            if(ptr == 1)
+                this.selectNode(this.arr[this.arr.findIndex(element => element == node) + 1])
+            else
+                this.selectNode(this.arr[this.arr.findIndex(element => element == node)])
+        },
+        clean() {
+            dataStructure = null
+            switch(this.selected) {
+                case 'simples':
+                    this.listaLigada.head = head = {key: null, next: null}
+                    this.listaLigada.count = 0
+                    dataStructure = this.listaLigada
+                    break
+                case 'dupla':
+                    this.listaDupla.head = {key: null, next: null, last: null}
+                    this.listaDupla.count = 0
+                    dataStructure = this.listaDupla
+                    break
+                case 'circular':
+                    this.listaCircular.head = {key: null, next: null, last: null}
+                    this.listaCircular.head.next = this.listaCircular.head
+                    this.listaCircular.head.last = this.listaCircular.head
+                    this.listaCircular.count = 0
+                    dataStructure = this.listaCircular
+                    break
+                case 'pilha':
+                    break    
+                case 'fila':
+                    break
+            }
+            this.updateClearBtn(dataStructure)
+            this.arrayUpdater(dataStructure.head)
+        },
+        updateClearBtn(dataStructure) {
+            if(dataStructure.count != 0) {
+                this.cleanBtnColor = '#df626f'
+                this.cleanBtnText = 'white'
+            }
+            else {
+                this.cleanBtnColor = 'white'
+                this.cleanBtnText = 'black'
+            }
         }
     }
 })

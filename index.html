@@ -14,7 +14,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" 
             integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" 
             crossorigin="anonymous"></script>
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="./style.css">
     <title>Learning vue</title>
 </head>
@@ -40,91 +39,165 @@
                     <input v-model="key" @keyup.enter="mediator($event)" :readonly="readOnlyInput && inputDelete" type="number" 
                             class="form-control" id="inputNumber">
                     <button v-if="!inputDelete" @click="push($event)" class="btn btn-primary" type="button">{{ buttonMessage }}</button>
-                <button v-else @click="pop($event)" class="btn btn-danger" type="button">{{ buttonMessage }}</button>
+                    <button v-else @click="pop($event)" class="btn btn-danger" type="button">{{ buttonMessage }}</button>
+                    <select class="form-select" v-model="direction" id="directionGroupSelect">
+                        <option selected value="vertical">Vertical</option>
+                        <option value="horizontal">Horizontal</option>
+                    </select>
+                    <label class="input-group-text clickable" v-bind:style="{ background: cleanBtnColor }" @click="clean()">Esvaziar</label>
                 </div>
-                
             </div>
         </div>
         <div v-if="message" class="alert alert-warning" role="alert">
             Aviso: {{ message }}
         </div>
         <br>
+        <br>
         <div class="container">
-            <div class="row justify-content-evenly">
+            <div v-if="direction == 'vertical'" class="row justify-content-evenly">
                 <div class="col">
-                    <div class="row" v-for="node in arr">
-                        <div class="date-grid">
-                            <button class="node" v-if="selected == 'simples' || selected == 'pilha' || selected == 'fila'"
-                                    @click="selectNode(node)">
-                                <time>{{ node }}</time>
-                                <div class="smallHolder">
-                                    <div class="next">
-                                        <i class="bi bi-arrow-down"></i>
-                                    </div>
-                                </div>   
-                            </button>
-                            <button class="node" v-if="selected == 'dupla'" @click="selectNode(node)">
-                                <div class="smallHolder">
-                                    <div class="last">
-                                        <i class="bi bi-arrow-up"></i>
-                                    </div>
-                                    <div class="next">
-                                        <i class="bi bi-arrow-down"></i>
-                                    </div>
-                                </div>   
-                                <time>{{ node }}</time>
-                                <div class="smallHolder">
-                                    <div class="last">
-                                        <i class="bi bi-arrow-up"></i>
-                                    </div>
-                                    <div class="next">
-                                        <i class="bi bi-arrow-down"></i>
-                                    </div>
-                                </div>   
-                            </button>
-                            <button class="node" v-if="selected == 'circular'" @click="selectNode(node)">
-                                <div class="smallHolder">
-                                    <div class="last">
-                                        <i class="bi bi-arrow-up"></i>
-                                    </div>
-                                    <div class="next">
-                                        <i class="bi bi-arrow-down"></i>
-                                    </div>
-                                </div>   
-                                <time>{{ node }}</time>
-                                <div class="smallHolder">
-                                    <div class="last">
-                                        <i class="bi bi-arrow-up"></i>
-                                    </div>
-                                    <div class="next">
-                                        <i class="bi bi-arrow-down"></i>
-                                    </div>
-                                </div>   
-                            </button>
+                    <section v-if="selected == 'simples'" v-for="node in arr" class="flex-container-col nowrap">
+                        <div @click="selectNode(node)" class="flex-node-col">{{ node }}</div>
+                        <div class="horizontal-pointers">
+                            <div @click="pointerCall(1, node)" v-if="node != 'null'" class="ptr next">
+                                <i class="bi bi-arrow-down"></i>
+                            </div>
                         </div>
-                    </div>
+                    </section>
+                    <section v-if="selected == 'dupla'" class="flex-container-col nowrap">
+                        <section v-for="node in arr" class="flex-container-col nowrap">
+                            <div @click="selectNode(node)" class="flex-node-col">
+                                {{ node != 'null_a' && node != 'null_b' ? node : 'null' }}
+                            </div>
+                            <div v-if="node != 'null_b'" class="horizontal-pointers">
+                                <div v-if="this.arr.findIndex(element => element == node) != this.arr.length - 2" @click="pointerCall(0, node)" class="ptr last">
+                                    <i class="bi bi-arrow-up"></i>
+                                </div>
+                                <div v-else class="ptr nulo"></div>
+                                <div v-if="node != 'null_a'" @click="pointerCall(1, node)" class="ptr next">
+                                    <i class="bi bi-arrow-down"></i>
+                                </div>
+                                <div v-else class="ptr nulo"></div>
+                            </div>
+                        </section>
+                    </section>
+                    <section v-if="selected == 'circular'" class="flex-container-col nowrap">
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <section v-for="node in arr" class="flex-container-col nowrap">
+                            <div v-if="node == 'head'" class="horizontal-pointers">
+                                <div @click="pointerCall(1, node)" class="ptr next">
+                                    <i class="bi bi-arrow-down"></i>
+                                </div>
+                                <div @click="pointerCall(0, node)" class="ptr last">
+                                    <i class="bi bi-arrow-up"></i>
+                                </div>
+                            </div>
+                            <div @click="selectNode(node)" class="flex-node-col">{{ node }}</div>
+                            <div class="horizontal-pointers">
+                                <div @click="pointerCall(1, node)" class="ptr next">
+                                    <i class="bi bi-arrow-down"></i>
+                                </div>
+                                <div @click="pointerCall(0, node)" class="ptr last">
+                                    <i class="bi bi-arrow-up"></i>
+                                </div>
+                            </div>
+                        </section>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </section>
+                    <section v-if="selected == 'pilha' || selected == 'fila'" class="flex-container-col nowrap">
+                        <section v-for="node in arr" class="flex-container-col nowrap">
+                            <div @click="selectNode(node)" class="flex-node-col">{{ node }}</div>
+                            <div class="horizontal-pointers">
+                                <div class="ptr divisoria"></div>
+                            </div>
+                        </section>
+                    </section>
                 </div>
                 <div class="col">
                     <div class="card">
                         <h5 class="card-title">Valores do Nó:</h5>
                         <h6 class="card-subtitle mb-2 text-muted">{{ selectedNode }}</h6>
-                        <p class="card-text">Na sua deleção: o nó de chave {{ selectedNode }}</p>
                     </div>
                 </div>
             </div>
-            
+            <div v-if="direction == 'horizontal'" class="col">
+                <section v-if="selected == 'simples'" class="flex-container nowrap">
+                    <section v-if="selected == 'simples'"  v-for="node in arr" class="flex-container nowrap">
+                        <div @click="selectNode(node)" class="flex-node">{{ node }}</div>
+                        <div class="vertical-pointers">
+                            <div @click="pointerCall(1, node)" v-if="node != 'null'" class="ptr-horizontal next">
+                                <i class="bi bi-arrow-right"></i>
+                            </div>
+                        </div>
+                    </section>
+                </section>
+                <section v-if="selected == 'dupla'" class="flex-container nowrap">
+                    <section v-for="node in arr" class="flex-container nowrap">
+                        <div @click="selectNode(node)" class="flex-node">
+                            {{ node != 'null_a' && node != 'null_b' ? node : 'null' }}
+                        </div>
+                        <div v-if="node != 'null_b'" class="vertical-pointers">
+                            <div v-if="node != 'null_a'" @click="pointerCall(1, node)" class="smallptr=horizontal next">
+                                <i class="bi bi-arrow-right"></i>
+                            </div>
+                            <div v-else class="smallptr=horizontal nulo"></div>
+                            <div v-if="this.arr.findIndex(element => element == node) != this.arr.length - 2" @click="pointerCall(0, node)" class="smallptr=horizontal last">
+                                <i class="bi bi-arrow-left"></i>
+                            </div>
+                            <div v-else class="smallptr=horizontal nulo"></div>
+                        </div>
+                    </section>
+                </section>
+                <section v-if="selected == 'circular'" class="flex-container nowrap">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <section v-for="node in arr" class="flex-container nowrap">
+                        <div v-if="node == 'head'" class="vertical-pointers">
+                            <div @click="pointerCall(1, node)" class="smallptr-horizontal next">
+                                <i class="bi bi-arrow-right"></i>
+                            </div>
+                            <div @click="pointerCall(0, node)" class="smallptr-horizontal last">
+                                <i class="bi bi-arrow-left"></i>
+                            </div>
+                        </div>
+                        <div @click="selectNode(node)" class="flex-node">{{ node }}</div>
+                        <div class="vertical-pointers">
+                            <div @click="pointerCall(1, node)" class="smallptr-horizontal next">
+                                <i class="bi bi-arrow-right"></i>
+                            </div>
+                            <div @click="pointerCall(0, node)" class="smallptr-horizontal last">
+                                <i class="bi bi-arrow-left"></i>
+                            </div>
+                        </div>
+                    </section>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </section>
+                <section v-if="selected == 'pilha' || selected == 'fila'" class="flex-container nowrap">
+                    <section v-for="node in arr" class="flex-container nowrap">
+                        <div @click="selectNode(node)" class="flex-node">{{ node }}</div>
+                        <div class="vertical-pointers">
+                            <div class="ptr-horizontal divisoria"></div>
+                        </div>
+                    </section>
+                </section>
+                <br>
+                <br>
+                <div class="row">
+                    <div class="card">
+                        <h5 class="card-title">Valores do Nó:</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ selectedNode }}</h6>
+                        <h5 v-if="selectedNode" class="card-title">Ao ser deletado:</h5>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="row align-items-start">
-            
-        </div>        
-        <br>
-        <p v-if="selected == 'simples'">Organização: {{ listaLigada }}</p>
-        <!--- 
-        <p v-else-if="selected == 'dupla'">Organização: {{ listaDupla }}</p>
-        <p v-else-if="selected == 'circular'">Organização: {{ listaDupla }}</p>
-        <p v-else-if="selected == 'pilha'">Organização: {{ listaDupla }}</p>
-        <p v-else="selected == 'fila'">Organização: {{ listaDupla }}</p>
-        --->
     </div>
 
     <script src="app.js"></script>
