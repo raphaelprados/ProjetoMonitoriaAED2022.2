@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html> -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -33,11 +33,11 @@
                         <option value="pilha">Pilha</option>
                         <option value="fila">Fila</option>
                     </select>
+                    <input v-model="key" @keyup.enter="mediator($event)" :readonly="readOnlyInput && inputDelete" type="number" 
+                            class="form-control" id="inputNumber">
                     <div class="input-group-text">
                         <input v-model="inputDelete" @click="updateButton" class="form-check-input mt-0" type="checkbox">
                     </div>
-                    <input v-model="key" @keyup.enter="mediator($event)" :readonly="readOnlyInput && inputDelete" type="number" 
-                            class="form-control" id="inputNumber">
                     <button v-if="!inputDelete" @click="push($event)" class="btn btn-primary" type="button">{{ buttonMessage }}</button>
                     <button v-else @click="pop($event)" class="btn btn-danger" type="button">{{ buttonMessage }}</button>
                     <select class="form-select" v-model="direction" id="directionGroupSelect">
@@ -57,79 +57,109 @@
             <div v-if="direction == 'vertical'" class="row justify-content-evenly">
                 <div class="col">
                     <section v-if="selected == 'simples'" v-for="node in arr" class="flex-container-col nowrap">
-                        <div @click="selectNode(node)" class="flex-node-col">{{ node }}</div>
+                        <div @click="selectNode(node)" class="flex-node-col">
+                            <div class="node-text">{{ node }}</div>
+                        </div>
                         <div class="horizontal-pointers">
-                            <div @click="pointerCall(1, node)" v-if="node != 'null'" class="ptr next">
-                                <i class="bi bi-arrow-down"></i>
+                            <div @click="pointerCall(1, node)" v-if="node != 'null'" style="align-content: center;" class="ptr next">
+                                <i class="bi bi-arrow-down center-one-horizontal"></i>
                             </div>
                         </div>
                     </section>
                     <section v-if="selected == 'dupla'" class="flex-container-col nowrap">
                         <section v-for="node in arr" class="flex-container-col nowrap">
                             <div @click="selectNode(node)" class="flex-node-col">
-                                {{ node != 'null_a' && node != 'null_b' ? node : 'null' }}
+                                <div class="node-text">{{ node != 'null_a' && node != 'null_b' ? node : 'null' }}</div>
                             </div>
                             <div v-if="node != 'null_b'" class="horizontal-pointers">
                                 <div v-if="this.arr.findIndex(element => element == node) != this.arr.length - 2" @click="pointerCall(0, node)" class="ptr last">
-                                    <i class="bi bi-arrow-up"></i>
+                                    <i class="bi bi-arrow-up center-two-horizontal"></i>
                                 </div>
                                 <div v-else class="ptr nulo"></div>
                                 <div v-if="node != 'null_a'" @click="pointerCall(1, node)" class="ptr next">
-                                    <i class="bi bi-arrow-down"></i>
+                                    <i class="bi bi-arrow-down center-two-horizontal"></i>
                                 </div>
                                 <div v-else class="ptr nulo"></div>
                             </div>
                         </section>
                     </section>
                     <section v-if="selected == 'circular'" class="flex-container-col nowrap">
-                        <div class="d-flex flex-row">
-                            <div class="d-flex flex-column">
-                                <span class="dot last-too-light"></span>
-                                <span class="dot last-light"></span>
-                                <span class="dot last"></span>
-                            </div>
-                            <div class="d-flex flex-column" style="margin-left: 50px;">
-                                <span class="dot next-too-light"></span>
-                                <span class="dot next-light"></span>
-                                <span class="dot next"></span>
+                        <div class="-flex flex-row">
+                            <div class="-flex flex-column">
+                                <div class="d-flex flex-row">
+                                    <div class="d-flex flex-column">
+                                        <div :style="{ 'border-top': '6px solid #d53343', 'width': 45 + 'px' }"></div>
+                                    </div>
+                                    <div class="d-flex flex-column">
+                                        <div class="d-flex flex-row">
+                                            <div :style="{ 'margin-left': '55px', 'border-top': '6px solid #0060df', 'width': 46 + 'px' }"></div>
+                                        </div>
+                                    </div>
+                                </div>                       
                             </div>
                         </div>
-                        <section v-for="node in arr" class="flex-container-col nowrap">
-                            <div v-if="node == 'head'" class="horizontal-pointers">
-                                <div @click="pointerCall(0, node)" class="ptr last">
-                                    <i class="bi bi-arrow-up"></i>
-                                </div>
-                                <div @click="pointerCall(1, node)" class="ptr next">
-                                    <i class="bi bi-arrow-down"></i>
-                                </div>
-                            </div>
-                            <div @click="selectNode(node)" class="flex-node-col">{{ node }}</div>
-                            <div class="horizontal-pointers">
-                                <div @click="pointerCall(0, node)" class="ptr last">
-                                    <i class="bi bi-arrow-up"></i>
-                                </div>
-                                <div @click="pointerCall(1, node)" class="ptr next">
-                                    <i class="bi bi-arrow-down"></i>
-                                </div>
-                            </div>
-                        </section>
                         <div class="d-flex flex-row">
-                            <div class="d-flex flex-column">
-                                <span class="dot last"></span>
-                                <span class="dot last-light"></span>
-                                <span class="dot last-too-light"></span>
+                            <div class="d-flex flex-row">
+                                <div class="d-flex flex-column">
+                                    <div :style="{ 'border-left': '6px solid #d53343', 'height': (100 * (listaCircular.count + 1) + 25 * (listaCircular.count + 2) + 84) + 'px' }"></div>
+                                </div>
+                                <div class="d-flex flex-column" style="margin-left: 7px; margin-right: 7px;">
+                                    <div class="d-flex flex-row">
+                                        <div :style="{ 'margin-left': '26px', 'border-left': '6px solid #d53343', 'height': '42px' }"></div>
+                                        <div :style="{ 'margin-left': '55px', 'border-left': '6px solid #0060df', 'height': '42px' }"></div>
+                                    </div>
+                                    <section v-for="node in arr" class="flex-container-col nowrap">
+                                        <div v-if="node == 'head'" class="horizontal-pointers">
+                                            <div @click="pointerCall(2, node)" class="ptr last">
+                                                <i class="bi bi-arrow-up center-two-horizontal"></i>
+                                            </div>
+                                            <div @click="pointerCall(3, node)" class="ptr next">
+                                                <i class="bi bi-arrow-down center-two-horizontal"></i>
+                                            </div>
+                                        </div>
+                                        <div @click="selectNode(node)" class="flex-node-col">
+                                            <div class="node-text">{{ node }}</div>
+                                        </div>
+                                        <div class="horizontal-pointers">
+                                            <div @click="pointerCall(0, node)" class="ptr last">
+                                                <i class="bi bi-arrow-up center-two-horizontal"></i>
+                                            </div>
+                                            <div @click="pointerCall(1, node)" class="ptr next">
+                                                <i class="bi bi-arrow-down center-two-horizontal"></i>
+                                            </div>
+                                        </div>
+                                    </section>
+                                    <div class="d-flex flex-row">
+                                        <div :style="{ 'margin-left': '26px', 'border-left': '6px solid #d53343', 'height': '42px' }"></div>
+                                        <div :style="{ 'margin-left': '55px', 'border-left': '6px solid #0060df', 'height': '42px' }"></div>
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-column">
+                                    <div :style="{ 'border-left': '6px solid #0060df', 'height': (100 * (listaCircular.count + 1) + 25 * (listaCircular.count + 2) + 84) + 'px' }"></div>
+                                </div>
                             </div>
-                            <div class="d-flex flex-column" style="margin-left: 50px;">
-                                <span class="dot next"></span>
-                                <span class="dot next-light"></span>
-                                <span class="dot next-too-light"></span>
+                        </div>
+                        <div class="-flex flex-row">
+                            <div class="-flex flex-column">
+                                <div class="d-flex flex-row">
+                                    <div class="d-flex flex-column">
+                                        <div :style="{ 'border-top': '6px solid #d53343', 'width': 45 + 'px' }"></div>
+                                    </div>
+                                    <div class="d-flex flex-column">
+                                        <div class="d-flex flex-row">
+                                            <div :style="{ 'margin-left': '55px', 'border-top': '6px solid #0060df', 'width': 46 + 'px' }"></div>
+                                        </div>
+                                    </div>
+                                </div>                       
                             </div>
                         </div>
                     </section>
                     <section v-if="selected == 'pilha' || selected == 'fila'" class="flex-container-col nowrap">
                         <section v-for="node in arr" class="flex-container-col nowrap">
-                            <div @click="selectNode(node)" class="flex-node-col">{{ node }}</div>
-                            <div class="horizontal-pointers">
+                            <div @click="selectNode(node)" class="flex-node-col">
+                                <div class="node-text">{{ node }}</div>
+                        </div>
+                            <div v-if="node != 'fim'" class="horizontal-pointers">
                                 <div class="ptr divisoria"></div>
                             </div>
                         </section>
@@ -137,7 +167,7 @@
                 </div>
                 <div class="col">
                     <div class="card">
-                        <h5 class="card-title">Valores do Nó:</h5>
+                        <h5 class="card-title">{{ selectedNode == -1 ? 'Selecione um nó ou um ponteiro' : 'valores do' + selectedType }}</h5>
                         <h6 v-if="selectedNode != -1" class="card-subtitle mb-2 text-muted">{{ selectedNode }}</h6>
                         <button v-if="selectedNode != -1" @click="selectedNode = -1" type="button" class="btn btn-seconday btn-sm">Limpar</a>
                     </div>
@@ -146,10 +176,12 @@
             <div v-if="direction == 'horizontal'" class="col">
                 <section v-if="selected == 'simples'" class="flex-container nowrap">
                     <section v-if="selected == 'simples'"  v-for="node in arr" class="flex-container nowrap">
-                        <div @click="selectNode(node)" class="flex-node">{{ node }}</div>
+                        <div @click="selectNode(node)" class="flex-node">
+                            <div class="node-text horizontal">{{ node }}</div>
+                        </div>
                         <div class="vertical-pointers">
                             <div @click="pointerCall(1, node)" v-if="node != 'null'" class="ptr-horizontal next">
-                                <i class="bi bi-arrow-right"></i>
+                                <i class="bi bi-arrow-right center-one-vertical"></i>
                             </div>
                         </div>
                     </section>
@@ -157,15 +189,17 @@
                 <section v-if="selected == 'dupla'" class="flex-container nowrap">
                     <section v-for="node in arr" class="flex-container nowrap">
                         <div @click="selectNode(node)" class="flex-node">
-                            {{ node != 'null_a' && node != 'null_b' ? node : 'null' }}
+                            <div class="node-text horizontal">
+                                {{ node != 'null_a' && node != 'null_b' ? node : 'null' }}
+                            </div>
                         </div>
                         <div v-if="node != 'null_b'" class="vertical-pointers">
                             <div v-if="node != 'null_a'" @click="pointerCall(1, node)" class="smallptr=horizontal next">
-                                <i class="bi bi-arrow-right"></i>
+                                <i class="bi bi-arrow-right center-one-vertical"></i>
                             </div>
                             <div v-else class="smallptr=horizontal nulo"></div>
                             <div v-if="this.arr.findIndex(element => element == node) != this.arr.length - 2" @click="pointerCall(0, node)" class="smallptr=horizontal last">
-                                <i class="bi bi-arrow-left"></i>
+                                <i class="bi bi-arrow-left center-one-vertical"></i>
                             </div>
                             <div v-else class="smallptr=horizontal nulo"></div>
                         </div>
@@ -174,51 +208,85 @@
                 <section v-if="selected == 'circular'" class="flex-container nowrap">
                     <div class="d-flex flex-column">
                         <div class="d-flex flex-row">
-                            <span class="dot next-too-light"></span>
-                            <span class="dot next-light"></span>
-                            <span class="dot next"></span>
+                            <div :style="{ 'border-top': '6px solid #0060df', 'width': (120 * (listaCircular.count + 1) + 25 * (listaCircular.count + 2) + 96) + 'px' }"></div>
                         </div>
-                        <div class="d-flex flex-row" style="margin-top: 35px;">
-                            <span class="dot last-too-light"></span>
-                            <span class="dot last-light"></span>
-                            <span class="dot last"></span>
-                        </div>
-                    </div>
-                    <section v-for="node in arr" class="flex-container nowrap">
-                        <div v-if="node == 'head'" class="vertical-pointers">
-                            <div @click="pointerCall(1, node)" class="smallptr-horizontal next">
-                                <i class="bi bi-arrow-right"></i>
-                            </div>
-                            <div @click="pointerCall(0, node)" class="smallptr-horizontal last">
-                                <i class="bi bi-arrow-left"></i>
-                            </div>
-                        </div>
-                        <div @click="selectNode(node)" class="flex-node">{{ node }}</div>
-                        <div class="vertical-pointers">
-                            <div @click="pointerCall(1, node)" class="smallptr-horizontal next">
-                                <i class="bi bi-arrow-right"></i>
-                            </div>
-                            <div @click="pointerCall(0, node)" class="smallptr-horizontal last">
-                                <i class="bi bi-arrow-left"></i>
-                            </div>
-                        </div>
-                    </section>
-                    <div class="d-flex flex-column">
                         <div class="d-flex flex-row">
-                            <span class="dot next"></span>
-                            <span class="dot next-light"></span>
-                            <span class="dot next-too-light"></span>
+                            <div class="d-flex flex-column">
+                                <div class="d-flex flex-row">
+                                    <div class="d-flex flex-column">
+                                        <div class="d-flex flex-row">
+                                            <div :style="{ 'border-left': '6px solid #0060df', 'height': '36px' }"></div>
+                                        </div>
+                                        <div class="d-flex flex-row">
+                                            <div :style="{ 'margin-top': '43px','border-left': '6px solid #d53343', 'height': '32px' }"></div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex flex-column">
+                                        <div class="d-flex flex-row">
+                                            <div :style="{ 'margin-top': '30px', 'border-top': '6px solid #0060df', 'width': '42px' }"></div>
+                                        </div>
+                                        <div class="d-flex flex-row">
+                                            <div :style="{ 'margin-top': '43px', 'border-top': '6px solid #d53343', 'width': '42px' }"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-column" style="margin-top: 7px;">
+                                <div class="d-flex flex-row">
+                                    <section v-for="node in arr" class="flex-container nowrap">
+                                        <div v-if="node == 'head'" class="vertical-pointers">
+                                            <div @click="pointerCall(3, node)" class="smallptr-horizontal next">
+                                                <i class="bi bi-arrow-right center-one-vertical"></i>
+                                            </div>
+                                            <div @click="pointerCall(2, node)" class="smallptr-horizontal last">
+                                                <i class="bi bi-arrow-left center-one-vertical" ></i>
+                                            </div>
+                                        </div>
+                                        <div @click="selectNode(node)" class="flex-node">
+                                            <div class="node-text horizontal">{{ node }}</div>
+                                        </div>
+                                        <div class="vertical-pointers">
+                                            <div @click="pointerCall(1, node)" class="smallptr-horizontal next">
+                                                <i class="bi bi-arrow-right center-one-vertical"></i>
+                                            </div>
+                                            <div @click="pointerCall(0, node)" class="smallptr-horizontal last">
+                                                <i class="bi bi-arrow-left center-one-vertical"></i>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-column">
+                                <div class="d-flex flex-row">
+                                    <div class="d-flex flex-column">
+                                        <div class="d-flex flex-row">
+                                            <div :style="{ 'margin-top': '30px', 'border-top': '6px solid #0060df', 'width': '42px' }"></div>
+                                        </div>
+                                        <div class="d-flex flex-row">
+                                            <div :style="{ 'margin-top': '43px', 'border-top': '6px solid #d53343', 'width': '42px' }"></div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex flex-column">
+                                        <div class="d-flex flex-row">
+                                            <div :style="{ 'border-left': '6px solid #0060df', 'height': '36px' }"></div>
+                                        </div>
+                                        <div class="d-flex flex-row">
+                                            <div :style="{ 'margin-top': '43px','border-left': '6px solid #d53343', 'height': '32px' }"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="d-flex flex-row" style="margin-top: 35px;">
-                            <span class="dot last"></span>
-                            <span class="dot last-light"></span>
-                            <span class="dot last-too-light"></span>
+                        <div class="d-flex flex-row">
+                            <div :style="{ 'border-top': '6px solid #d53343', 'width': (120 * (listaCircular.count + 1) + 25 * (listaCircular.count + 2) + 96) + 'px' }"></div>
                         </div>
                     </div>
                 </section>
                 <section v-if="selected == 'pilha' || selected == 'fila'" class="flex-container nowrap">
                     <section v-for="node in arr" class="flex-container nowrap">
-                        <div @click="selectNode(node)" class="flex-node">{{ node }}</div>
+                        <div @click="selectNode(node)" class="flex-node">
+                            <div class="node-text horizontal">{{ node }}</div>
+                    </div>
                         <div class="vertical-pointers">
                             <div class="ptr-horizontal divisoria"></div>
                         </div>

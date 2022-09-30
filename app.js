@@ -21,7 +21,8 @@ const app = Vue.createApp({
             fila: {count: 0, head: {key: null, next: null, last: null}},
             arr: [],
             neighboorNodes: [],
-            cur: null
+            cur: null,
+            selectedType: ''
         }
     },
     created() {
@@ -33,6 +34,11 @@ const app = Vue.createApp({
     methods: {
         push(e) {
             var head = null
+            // Verifica se é um número
+            if(isNaN(typeof this.key != 'number')) {
+                console.log('object')
+                return
+            }
             switch(this.selected) {
                 case '':
                 case 'selecione':
@@ -78,7 +84,6 @@ const app = Vue.createApp({
             }
             // Atualiza o nodo selecionado nas informacoes de nodo após uma inserção
             this.selectNode(this.selectedNode != -1 ? this.selectedNode.key : -1)
-            console.log(this.selectedNode)
             this.arrayUpdater(head)
             // Reseta o valor para impedir que o usuário insira o mesmo sem querer
             this.key = null
@@ -193,6 +198,8 @@ const app = Vue.createApp({
                     dataStructure = this.pilha
                     break
             }
+            // Reseta o valor do no selecionado ao trocar de estrutura
+            this.selectedNode = -1
             // Define a cor do botão de esvaziar a estrutura de dados
             this.updateClearBtn(dataStructure)
             // Atualiza array 
@@ -251,7 +258,6 @@ const app = Vue.createApp({
                 this.selectedNode = {
                     key: temp.key
                 }
-                console.log(count);
                 if(this.selected != 'pilha' && this.selected != 'fila')
                     this.selectedNode.next = temp.next ? temp.next.key : null
                 else
@@ -260,8 +266,7 @@ const app = Vue.createApp({
                     this.selectedNode.last = temp.last ? temp.last.key : null
             }
             else
-                this.selectedNode = 'null'
-            console.log(this.selectedNode)                
+                this.selectedNode = 'null'                
         },
         mediator(e) {
             // Possibilita transformar o botão de inserir/deletar
@@ -274,7 +279,6 @@ const app = Vue.createApp({
             dataStructure = null
             // Atualização da Array de referência
             temp = head.next
-            console.log('entrou');
             i = 0
             // Reseta a array
             this.arr.length = 0
@@ -313,14 +317,29 @@ const app = Vue.createApp({
             }
             // Atualiza o botão de esvaziar estrutura de dado
             this.updateClearBtn(dataStructure)
-            console.log(this.arr)
         },
-        pointerCall(ptr, node) {
+        pointerCall(ptr, node, origin) {
             returnValue = null
-            if(ptr == 1)
-                this.selectNode(this.arr[this.arr.findIndex(element => element == node) + 1])
+            if(origin == 'Ponteiro')
+                this.selectedType = 'Ponteiro'
             else
-                this.selectNode(this.arr[this.arr.findIndex(element => element == node)])
+                this.selectedType = 'Nó'
+            switch(ptr) {
+                case 0:
+                    this.selectNode(this.arr[this.arr.findIndex(element => element == node)])
+                    break
+                case 1:
+                    this.selectNode(this.arr[this.arr.findIndex(element => element == node) + 1])
+                    break
+                case 2:
+                    this.selectNode(this.listaCircular.head.last.key)
+                    console.log(1)
+                    break
+                case 3:
+                    this.selectNode(this.listaCircular.head.key)
+                    console.log(0);
+                    break
+            }    
         },
         clean() {
             dataStructure = null
@@ -343,9 +362,21 @@ const app = Vue.createApp({
                     dataStructure = this.listaCircular
                     break
                 case 'pilha':
+                    this.pilha.head = {key: null, next: null}
+                    this.pilha.count = 0
+                    dataStructure = this.pilha
                     break    
                 case 'fila':
+                    this.fila.head = {key: null, next: null, last: null}
+                    this.fila.head.next = this.fila.head
+                    this.fila.head.last = this.fila.head
+                    this.fila.count = 0
+                    dataStructure = this.fila
                     break
+                /*
+                pilha: {count: 0, head: {key: null, next: null}},
+                fila: {count: 0, head: {key: null, next: null, last: null}},
+                */
             }
             this.updateClearBtn(dataStructure)
             this.arrayUpdater(dataStructure.head)
@@ -359,6 +390,15 @@ const app = Vue.createApp({
                 this.cleanBtnColor = 'white'
                 this.cleanBtnText = 'black'
             }
+        },
+        printPath() {
+            array = []
+            for(i = 0; i < this.listaCircular.count; i++)
+                array[i] = 1
+            return array
+        }, 
+        printRange() {
+            return Math.ceil((100 * (listaCircular.count + 1) + 25 * (listaCircular.count + 2) + 42 - listaCircular.count * 4) / 12.5)
         }
     }
 })
