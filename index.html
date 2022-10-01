@@ -57,26 +57,26 @@
             <div v-if="direction == 'vertical'" class="row justify-content-evenly">
                 <div class="col">
                     <section v-if="selected == 'simples'" v-for="node in arr" class="flex-container-col nowrap">
-                        <div @click="selectNode(node)" class="flex-node-col">
+                        <div @click="clickCall(-1, node, $event)" class="flex-node-col">
                             <div class="node-text">{{ node }}</div>
                         </div>
                         <div class="horizontal-pointers">
-                            <div @click="pointerCall(1, node)" v-if="node != 'null'" style="align-content: center;" class="ptr next">
+                            <div @click="clickCall(1, node, $event)" v-if="node != 'null'" style="align-content: center;" class="ptr next">
                                 <i class="bi bi-arrow-down center-one-horizontal"></i>
                             </div>
                         </div>
                     </section>
                     <section v-if="selected == 'dupla'" class="flex-container-col nowrap">
                         <section v-for="node in arr" class="flex-container-col nowrap">
-                            <div @click="selectNode(node)" class="flex-node-col">
+                            <div @click="clickCall(-1, node, $event)" class="flex-node-col">
                                 <div class="node-text">{{ node != 'null_a' && node != 'null_b' ? node : 'null' }}</div>
                             </div>
                             <div v-if="node != 'null_b'" class="horizontal-pointers">
-                                <div v-if="this.arr.findIndex(element => element == node) != this.arr.length - 2" @click="pointerCall(0, node)" class="ptr last">
+                                <div v-if="this.arr.findIndex(element => element == node) != this.arr.length - 2" @click="clickCall(0, node, $event)" class="ptr last">
                                     <i class="bi bi-arrow-up center-two-horizontal"></i>
                                 </div>
                                 <div v-else class="ptr nulo"></div>
-                                <div v-if="node != 'null_a'" @click="pointerCall(1, node)" class="ptr next">
+                                <div v-if="node != 'null_a'" @click="clickCall(1, node, $event)" class="ptr next">
                                     <i class="bi bi-arrow-down center-two-horizontal"></i>
                                 </div>
                                 <div v-else class="ptr nulo"></div>
@@ -110,21 +110,21 @@
                                     </div>
                                     <section v-for="node in arr" class="flex-container-col nowrap">
                                         <div v-if="node == 'head'" class="horizontal-pointers">
-                                            <div @click="pointerCall(2, node)" class="ptr last">
+                                            <div @click="clickCall(2, node, $event)" class="ptr last">
                                                 <i class="bi bi-arrow-up center-two-horizontal"></i>
                                             </div>
-                                            <div @click="pointerCall(3, node)" class="ptr next">
+                                            <div @click="clickCall(3, node, $event)" class="ptr next">
                                                 <i class="bi bi-arrow-down center-two-horizontal"></i>
                                             </div>
                                         </div>
-                                        <div @click="selectNode(node)" class="flex-node-col">
+                                        <div @click="clickCall(-1, node, $event)" class="flex-node-col">
                                             <div class="node-text">{{ node }}</div>
                                         </div>
                                         <div class="horizontal-pointers">
-                                            <div @click="pointerCall(0, node)" class="ptr last">
+                                            <div @click="clickCall(0, node, $event)" class="ptr last">
                                                 <i class="bi bi-arrow-up center-two-horizontal"></i>
                                             </div>
-                                            <div @click="pointerCall(1, node)" class="ptr next">
+                                            <div @click="clickCall(1, node, $event)" class="ptr next">
                                                 <i class="bi bi-arrow-down center-two-horizontal"></i>
                                             </div>
                                         </div>
@@ -156,7 +156,7 @@
                     </section>
                     <section v-if="selected == 'pilha' || selected == 'fila'" class="flex-container-col nowrap">
                         <section v-for="node in arr" class="flex-container-col nowrap">
-                            <div @click="selectNode(node)" class="flex-node-col">
+                            <div @click="clickCall(-1, node, $event)" class="flex-node-col">
                                 <div class="node-text">{{ node }}</div>
                         </div>
                             <div v-if="node != 'fim'" class="horizontal-pointers">
@@ -167,7 +167,7 @@
                 </div>
                 <div class="col">
                     <div class="card">
-                        <h5 class="card-title">{{ selectedNode == -1 ? 'Selecione um nó ou um ponteiro' : 'valores do' + selectedType }}</h5>
+                        <h5 class="card-title">{{ selectedNode == -1 ? 'Selecione um nó ou um ponteiro' : ('Valores do ' + selectedType) }}</h5>
                         <h6 v-if="selectedNode != -1" class="card-subtitle mb-2 text-muted">{{ selectedNode }}</h6>
                         <button v-if="selectedNode != -1" @click="selectedNode = -1" type="button" class="btn btn-seconday btn-sm">Limpar</a>
                     </div>
@@ -176,32 +176,30 @@
             <div v-if="direction == 'horizontal'" class="col">
                 <section v-if="selected == 'simples'" class="flex-container nowrap">
                     <section v-if="selected == 'simples'"  v-for="node in arr" class="flex-container nowrap">
-                        <div @click="selectNode(node)" class="flex-node">
+                        <div @click="clickCall(-1, node, $event)" class="flex-node">
                             <div class="node-text horizontal">{{ node }}</div>
                         </div>
-                        <div class="vertical-pointers">
-                            <div @click="pointerCall(1, node)" v-if="node != 'null'" class="ptr-horizontal next">
-                                <i class="bi bi-arrow-right center-one-vertical"></i>
-                            </div>
+                        <div class="vertical-pointers next" @click="clickCall(1, node, $event)" v-if="node != 'null'">
+                            <i class="bi bi-arrow-right center-one-vertical"></i>
                         </div>
                     </section>
                 </section>
                 <section v-if="selected == 'dupla'" class="flex-container nowrap">
                     <section v-for="node in arr" class="flex-container nowrap">
-                        <div @click="selectNode(node)" class="flex-node">
+                        <div @click="clickCall(-1, node, $event)" class="flex-node">
                             <div class="node-text horizontal">
                                 {{ node != 'null_a' && node != 'null_b' ? node : 'null' }}
                             </div>
                         </div>
-                        <div v-if="node != 'null_b'" class="vertical-pointers">
-                            <div v-if="node != 'null_a'" @click="pointerCall(1, node)" class="smallptr=horizontal next">
-                                <i class="bi bi-arrow-right center-one-vertical"></i>
+                        <div class="d-flex flex-column" v-if="node != 'null_b'">
+                            <div v-if="node != 'null_a'" @click="clickCall(1, node, $event)" class="vertical-pointers small next">
+                                <i class="bi bi-arrow-right center-two-vertical"></i>
+                            </div>    
+                            <div v-else class="vertical-pointers small nulo"></div>    
+                            <div v-if="this.arr.findIndex(element => element == node) != this.arr.length - 2" @click="clickCall(0, node, $event)" class="vertical-pointers small last">
+                                <i class="bi bi-arrow-left center-two-vertical"></i>
                             </div>
-                            <div v-else class="smallptr=horizontal nulo"></div>
-                            <div v-if="this.arr.findIndex(element => element == node) != this.arr.length - 2" @click="pointerCall(0, node)" class="smallptr=horizontal last">
-                                <i class="bi bi-arrow-left center-one-vertical"></i>
-                            </div>
-                            <div v-else class="smallptr=horizontal nulo"></div>
+                            <div v-else class="vertical-pointers small nulo"></div>    
                         </div>
                     </section>
                 </section>
@@ -234,23 +232,24 @@
                             <div class="d-flex flex-column" style="margin-top: 7px;">
                                 <div class="d-flex flex-row">
                                     <section v-for="node in arr" class="flex-container nowrap">
-                                        <div v-if="node == 'head'" class="vertical-pointers">
-                                            <div @click="pointerCall(3, node)" class="smallptr-horizontal next">
-                                                <i class="bi bi-arrow-right center-one-vertical"></i>
-                                            </div>
-                                            <div @click="pointerCall(2, node)" class="smallptr-horizontal last">
-                                                <i class="bi bi-arrow-left center-one-vertical" ></i>
+
+                                        <div class="d-flex flex-column" v-if="node == 'head'">
+                                            <div @click="clickCall(3, node, $event)" class="vertical-pointers small next">
+                                                <i class="bi bi-arrow-right center-two-vertical"></i>
+                                            </div>    
+                                            <div @click="clickCall(2, node, $event)" class="vertical-pointers small last">
+                                                <i class="bi bi-arrow-left center-two-vertical" ></i>
                                             </div>
                                         </div>
-                                        <div @click="selectNode(node)" class="flex-node">
+                                        <div @click="clickCall(-1, node, $event)" class="flex-node">
                                             <div class="node-text horizontal">{{ node }}</div>
                                         </div>
-                                        <div class="vertical-pointers">
-                                            <div @click="pointerCall(1, node)" class="smallptr-horizontal next">
-                                                <i class="bi bi-arrow-right center-one-vertical"></i>
+                                        <div class="d-flex flex-column">
+                                            <div @click="clickCall(1, node, $event)" class="vertical-pointers small next">
+                                                <i class="bi bi-arrow-right center-two-vertical"></i>
                                             </div>
-                                            <div @click="pointerCall(0, node)" class="smallptr-horizontal last">
-                                                <i class="bi bi-arrow-left center-one-vertical"></i>
+                                            <div @click="clickCall(0, node, $event)" class="vertical-pointers small last">
+                                                <i class="bi bi-arrow-left center-two-vertical"></i>
                                             </div>
                                         </div>
                                     </section>
@@ -284,7 +283,7 @@
                 </section>
                 <section v-if="selected == 'pilha' || selected == 'fila'" class="flex-container nowrap">
                     <section v-for="node in arr" class="flex-container nowrap">
-                        <div @click="selectNode(node)" class="flex-node">
+                        <div @click="clickCall(-1, node, $event)" class="flex-node">
                             <div class="node-text horizontal">{{ node }}</div>
                     </div>
                         <div class="vertical-pointers">
@@ -296,7 +295,7 @@
                 <br>
                 <div class="row">
                     <div class="card">
-                        <h5 class="card-title">Valores do Nó:</h5>
+                        <h5 class="card-title">{{ selectedNode == -1 ? 'Selecione um nó ou um ponteiro' : ('Valores do ' + selectedType) }}</h5>
                         <h6 v-if="selectedNode != -1" class="card-subtitle mb-2 text-muted">{{ selectedNode }}</h6>
                         <button v-if="selectedNode != -1" @click="selectedNode = -1" type="button" class="btn btn-seconday btn-sm">Limpar</a>
                     </div>

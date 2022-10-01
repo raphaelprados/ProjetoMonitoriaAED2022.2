@@ -2,10 +2,6 @@
 /* Estilo dos elementos verticais */
 
 .divisoria { background: black; }
-
-/* .nulo { background: #c2c4c5; } */
-
-.fundo { background: #fff; }
   
 .bi-arrow-right { color: #fff;  }
 
@@ -24,12 +20,16 @@
 }
 
 .center-one-vertical {
-    margin-top: 40px; 
+    margin-top: 38px; 
+    margin-left: 4px;
 }
 
 .center-two-vertical {
-    margin-top: 25px; 
+    margin-top: 17px;
+    margin-left: 4px; 
 }
+
+/* Containers dos elementos */
 
 .flex-container {
     display: flex;
@@ -44,6 +44,8 @@
     padding: 0;
     margin: 0;
 }
+
+/* Estilização dos Nós */
 
 .flex-node {
     background: #e9ecef;
@@ -65,6 +67,8 @@
     cursor: pointer;    
 }
 
+/* Estilização dos holders dos ponteiros */
+
 .horizontal-pointers {
     width: 120px;
     height: 25px;
@@ -81,13 +85,15 @@
     cursor: pointer;
 }
 
-.wrap {
-    flex-wrap: wrap;
+.small {
+    height: 50px;
 }
 
 .nowrap {
     flex-wrap: nowrap;
 }
+
+/* Estilização dos ponteiros */
 
 .ptr {
     width: 120px;
@@ -110,44 +116,30 @@
 }
 
 .next { 
-    width: 100%;
-    height: 100%;
     background: #0060df; 
 }
 
 .next-light { 
-    width: 100%;
-    height: 100%;
     background: #4789e0; 
 }
 
 .next-too-light { 
-    width: 100%;
-    height: 100%;
     background: #74a1dd; 
 }
 
 .last {
-    width: 100%;
-    height: 100%;
     background: #d53343; 
 }
 
 .last-light {
-    width: 100%;
-    height: 100%;
     background: #da5865; 
 }
 
 .last-too-light {
-    width: 100%;
-    height: 100%;
     background: #d6868e; 
 }
 
 .nulo {
-    width: 100%;
-    height: 100%;
     background: #a0a2a3;
 }
 
@@ -155,17 +147,6 @@
 
 .clickable {
     cursor: pointer;
-}
-
-.dot {
-    height: 10px;
-    width: 10px;
-    border-radius: 50%;
-    display: inline-block;
-    margin-top: 2.3px;
-    margin-bottom: 2.3px;
-    margin-left: 3px;
-    margin-right: 3px;
 }
 
 .node-text  {

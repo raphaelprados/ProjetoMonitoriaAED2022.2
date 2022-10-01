@@ -35,8 +35,8 @@ const app = Vue.createApp({
         push(e) {
             var head = null
             // Verifica se é um número
-            if(isNaN(typeof this.key != 'number')) {
-                console.log('object')
+            if(this.key == '' || this.key == null)  {
+                this.message = 'Insira um número!'
                 return
             }
             switch(this.selected) {
@@ -95,7 +95,6 @@ const app = Vue.createApp({
                 case '':
                 case 'selecione':
                     this.message = 'Selecione uma opção de tipo de dado!'
-
                     break;
                 case 'simples':
                     head = this.listaLigada.head
@@ -168,7 +167,7 @@ const app = Vue.createApp({
             }
             this.arrayUpdater(head)
             // Reseta o valor para impedir que o usuário insira o mesmo sem querer
-            this.key = null
+            this.key = ''
             if(this.selected != 'selecione')
                 this.message = ''
         },
@@ -266,7 +265,7 @@ const app = Vue.createApp({
                     this.selectedNode.last = temp.last ? temp.last.key : null
             }
             else
-                this.selectedNode = 'null'                
+                this.selectedNode = 'null'    
         },
         mediator(e) {
             // Possibilita transformar o botão de inserir/deletar
@@ -318,13 +317,18 @@ const app = Vue.createApp({
             // Atualiza o botão de esvaziar estrutura de dado
             this.updateClearBtn(dataStructure)
         },
-        pointerCall(ptr, node, origin) {
+        clickCall(ptr, node, e) {
             returnValue = null
-            if(origin == 'Ponteiro')
+
+            if(String(e.target.outerHTML).includes('ptr') || String(e.target.parentNode.outerHTML).includes('bi-arrow')) 
                 this.selectedType = 'Ponteiro'
-            else
+            else 
                 this.selectedType = 'Nó'
+
             switch(ptr) {
+                case -1:
+                    this.selectNode(node)
+                    break
                 case 0:
                     this.selectNode(this.arr[this.arr.findIndex(element => element == node)])
                     break
@@ -333,11 +337,9 @@ const app = Vue.createApp({
                     break
                 case 2:
                     this.selectNode(this.listaCircular.head.last.key)
-                    console.log(1)
                     break
                 case 3:
                     this.selectNode(this.listaCircular.head.key)
-                    console.log(0);
                     break
             }    
         },
