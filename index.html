@@ -54,8 +54,8 @@
         <br>
         <br>
         <div class="container">
-            <div v-if="direction == 'vertical'" class="row justify-content-evenly">
-                <div class="col">
+            <div v-if="direction == 'vertical'" class="d-flex justify-content-evenly">
+                <div class="d-flex flex-column">
                     <section v-if="selected == 'simples'" v-for="node in arr" class="flex-container-col nowrap">
                         <div @click="clickCall(-1, node, $event)" class="flex-node-col">
                             <div class="node-text">{{ node }}</div>
@@ -165,134 +165,255 @@
                         </section>
                     </section>
                 </div>
-                <div class="col">
+                <div class="d-flex flex-column">
                     <div class="card">
                         <h5 class="card-title">{{ selectedNode == -1 ? 'Selecione um nó ou um ponteiro' : ('Valores do ' + selectedType) }}</h5>
                         <h6 v-if="selectedNode != -1" class="card-subtitle mb-2 text-muted">{{ selectedNode }}</h6>
                         <button v-if="selectedNode != -1" @click="selectedNode = -1" type="button" class="btn btn-seconday btn-sm">Limpar</a>
                     </div>
                 </div>
-            </div>
-            <div v-if="direction == 'horizontal'" class="col">
-                <section v-if="selected == 'simples'" class="flex-container nowrap">
-                    <section v-if="selected == 'simples'"  v-for="node in arr" class="flex-container nowrap">
-                        <div @click="clickCall(-1, node, $event)" class="flex-node">
-                            <div class="node-text horizontal">{{ node }}</div>
+                <!-- <div class="col" style="border: 1px solid black; align-items: center;">
+                    <section v-if="selected == 'simples'" v-for="node in arr" class="flex-container-col nowrap">
+                        <div @click="clickCall(-1, node, $event)" class="flex-node-col">
+                            <div class="node-text">{{ node }}</div>
                         </div>
-                        <div class="vertical-pointers next" @click="clickCall(1, node, $event)" v-if="node != 'null'">
-                            <i class="bi bi-arrow-right center-one-vertical"></i>
-                        </div>
-                    </section>
-                </section>
-                <section v-if="selected == 'dupla'" class="flex-container nowrap">
-                    <section v-for="node in arr" class="flex-container nowrap">
-                        <div @click="clickCall(-1, node, $event)" class="flex-node">
-                            <div class="node-text horizontal">
-                                {{ node != 'null_a' && node != 'null_b' ? node : 'null' }}
+                        <div class="horizontal-pointers">
+                            <div @click="clickCall(1, node, $event)" v-if="node != 'null'" style="align-content: center;" class="ptr next">
+                                <i class="bi bi-arrow-down center-one-horizontal"></i>
                             </div>
                         </div>
-                        <div class="d-flex flex-column" v-if="node != 'null_b'">
-                            <div v-if="node != 'null_a'" @click="clickCall(1, node, $event)" class="vertical-pointers small next">
-                                <i class="bi bi-arrow-right center-two-vertical"></i>
-                            </div>    
-                            <div v-else class="vertical-pointers small nulo"></div>    
-                            <div v-if="this.arr.findIndex(element => element == node) != this.arr.length - 2" @click="clickCall(0, node, $event)" class="vertical-pointers small last">
-                                <i class="bi bi-arrow-left center-two-vertical"></i>
-                            </div>
-                            <div v-else class="vertical-pointers small nulo"></div>    
-                        </div>
                     </section>
-                </section>
-                <section v-if="selected == 'circular'" class="flex-container nowrap">
-                    <div class="d-flex flex-column">
-                        <div class="d-flex flex-row">
-                            <div :style="{ 'border-top': '6px solid #0060df', 'width': (120 * (listaCircular.count + 1) + 25 * (listaCircular.count + 2) + 96) + 'px' }"></div>
-                        </div>
-                        <div class="d-flex flex-row">
-                            <div class="d-flex flex-column">
-                                <div class="d-flex flex-row">
-                                    <div class="d-flex flex-column">
-                                        <div class="d-flex flex-row">
-                                            <div :style="{ 'border-left': '6px solid #0060df', 'height': '36px' }"></div>
-                                        </div>
-                                        <div class="d-flex flex-row">
-                                            <div :style="{ 'margin-top': '43px','border-left': '6px solid #d53343', 'height': '32px' }"></div>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex flex-column">
-                                        <div class="d-flex flex-row">
-                                            <div :style="{ 'margin-top': '30px', 'border-top': '6px solid #0060df', 'width': '42px' }"></div>
-                                        </div>
-                                        <div class="d-flex flex-row">
-                                            <div :style="{ 'margin-top': '43px', 'border-top': '6px solid #d53343', 'width': '42px' }"></div>
-                                        </div>
-                                    </div>
+                    <section v-if="selected == 'dupla'" class="flex-container-col nowrap">
+                        <section v-for="node in arr" class="flex-container-col nowrap">
+                            <div @click="clickCall(-1, node, $event)" class="flex-node-col">
+                                <div class="node-text">{{ node != 'null_a' && node != 'null_b' ? node : 'null' }}</div>
+                            </div>
+                            <div v-if="node != 'null_b'" class="horizontal-pointers">
+                                <div v-if="this.arr.findIndex(element => element == node) != this.arr.length - 2" @click="clickCall(0, node, $event)" class="ptr last">
+                                    <i class="bi bi-arrow-up center-two-horizontal"></i>
                                 </div>
+                                <div v-else class="ptr nulo"></div>
+                                <div v-if="node != 'null_a'" @click="clickCall(1, node, $event)" class="ptr next">
+                                    <i class="bi bi-arrow-down center-two-horizontal"></i>
+                                </div>
+                                <div v-else class="ptr nulo"></div>
                             </div>
-                            <div class="d-flex flex-column" style="margin-top: 7px;">
+                        </section>
+                    </section>
+                    <section v-if="selected == 'circular'" class="flex-container-col nowrap">
+                        <div class="-flex flex-row">
+                            <div class="-flex flex-column">
                                 <div class="d-flex flex-row">
-                                    <section v-for="node in arr" class="flex-container nowrap">
-
-                                        <div class="d-flex flex-column" v-if="node == 'head'">
-                                            <div @click="clickCall(3, node, $event)" class="vertical-pointers small next">
-                                                <i class="bi bi-arrow-right center-two-vertical"></i>
-                                            </div>    
-                                            <div @click="clickCall(2, node, $event)" class="vertical-pointers small last">
-                                                <i class="bi bi-arrow-left center-two-vertical" ></i>
+                                    <div class="d-flex flex-column">
+                                        <div :style="{ 'border-top': '6px solid #d53343', 'width': 45 + 'px' }"></div>
+                                    </div>
+                                    <div class="d-flex flex-column">
+                                        <div class="d-flex flex-row">
+                                            <div :style="{ 'margin-left': '55px', 'border-top': '6px solid #0060df', 'width': 46 + 'px' }"></div>
+                                        </div>
+                                    </div>
+                                </div>                       
+                            </div>
+                        </div>
+                        <div class="d-flex flex-row">
+                            <div class="d-flex flex-row">
+                                <div class="d-flex flex-column">
+                                    <div :style="{ 'border-left': '6px solid #d53343', 'height': (100 * (listaCircular.count + 1) + 25 * (listaCircular.count + 2) + 84) + 'px' }"></div>
+                                </div>
+                                <div class="d-flex flex-column" style="margin-left: 7px; margin-right: 7px;">
+                                    <div class="d-flex flex-row">
+                                        <div :style="{ 'margin-left': '26px', 'border-left': '6px solid #d53343', 'height': '42px' }"></div>
+                                        <div :style="{ 'margin-left': '55px', 'border-left': '6px solid #0060df', 'height': '42px' }"></div>
+                                    </div>
+                                    <section v-for="node in arr" class="flex-container-col nowrap">
+                                        <div v-if="node == 'head'" class="horizontal-pointers">
+                                            <div @click="clickCall(2, node, $event)" class="ptr last">
+                                                <i class="bi bi-arrow-up center-two-horizontal"></i>
+                                            </div>
+                                            <div @click="clickCall(3, node, $event)" class="ptr next">
+                                                <i class="bi bi-arrow-down center-two-horizontal"></i>
                                             </div>
                                         </div>
-                                        <div @click="clickCall(-1, node, $event)" class="flex-node">
-                                            <div class="node-text horizontal">{{ node }}</div>
+                                        <div @click="clickCall(-1, node, $event)" class="flex-node-col">
+                                            <div class="node-text">{{ node }}</div>
                                         </div>
-                                        <div class="d-flex flex-column">
-                                            <div @click="clickCall(1, node, $event)" class="vertical-pointers small next">
-                                                <i class="bi bi-arrow-right center-two-vertical"></i>
+                                        <div class="horizontal-pointers">
+                                            <div @click="clickCall(0, node, $event)" class="ptr last">
+                                                <i class="bi bi-arrow-up center-two-horizontal"></i>
                                             </div>
-                                            <div @click="clickCall(0, node, $event)" class="vertical-pointers small last">
-                                                <i class="bi bi-arrow-left center-two-vertical"></i>
+                                            <div @click="clickCall(1, node, $event)" class="ptr next">
+                                                <i class="bi bi-arrow-down center-two-horizontal"></i>
                                             </div>
                                         </div>
                                     </section>
+                                    <div class="d-flex flex-row">
+                                        <div :style="{ 'margin-left': '26px', 'border-left': '6px solid #d53343', 'height': '42px' }"></div>
+                                        <div :style="{ 'margin-left': '55px', 'border-left': '6px solid #0060df', 'height': '42px' }"></div>
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-column">
+                                    <div :style="{ 'border-left': '6px solid #0060df', 'height': (100 * (listaCircular.count + 1) + 25 * (listaCircular.count + 2) + 84) + 'px' }"></div>
                                 </div>
                             </div>
-                            <div class="d-flex flex-column">
+                        </div>
+                        <div class="-flex flex-row">
+                            <div class="-flex flex-column">
                                 <div class="d-flex flex-row">
                                     <div class="d-flex flex-column">
-                                        <div class="d-flex flex-row">
-                                            <div :style="{ 'margin-top': '30px', 'border-top': '6px solid #0060df', 'width': '42px' }"></div>
-                                        </div>
-                                        <div class="d-flex flex-row">
-                                            <div :style="{ 'margin-top': '43px', 'border-top': '6px solid #d53343', 'width': '42px' }"></div>
-                                        </div>
+                                        <div :style="{ 'border-top': '6px solid #d53343', 'width': 45 + 'px' }"></div>
                                     </div>
                                     <div class="d-flex flex-column">
                                         <div class="d-flex flex-row">
-                                            <div :style="{ 'border-left': '6px solid #0060df', 'height': '36px' }"></div>
+                                            <div :style="{ 'margin-left': '55px', 'border-top': '6px solid #0060df', 'width': 46 + 'px' }"></div>
                                         </div>
-                                        <div class="d-flex flex-row">
-                                            <div :style="{ 'margin-top': '43px','border-left': '6px solid #d53343', 'height': '32px' }"></div>
+                                    </div>
+                                </div>                       
+                            </div>
+                        </div>
+                    </section>
+                    <section v-if="selected == 'pilha' || selected == 'fila'" class="flex-container-col nowrap">
+                        <section v-for="node in arr" class="flex-container-col nowrap">
+                            <div @click="clickCall(-1, node, $event)" class="flex-node-col">
+                                <div class="node-text">{{ node }}</div>
+                        </div>
+                            <div v-if="node != 'fim'" class="horizontal-pointers">
+                                <div class="ptr divisoria"></div>
+                            </div>
+                        </section>
+                    </section>
+                </div> -->
+                <!-- <div class="col">
+                    <div class="card">
+                        <h5 class="card-title">{{ selectedNode == -1 ? 'Selecione um nó ou um ponteiro' : ('Valores do ' + selectedType) }}</h5>
+                        <h6 v-if="selectedNode != -1" class="card-subtitle mb-2 text-muted">{{ selectedNode }}</h6>
+                        <button v-if="selectedNode != -1" @click="selectedNode = -1" type="button" class="btn btn-seconday btn-sm">Limpar</a>
+                    </div>
+                </div> -->
+            </div>
+            <div v-if="direction == 'horizontal'" class="d-flex flex-column" >
+                <div class="d-flex flex-row horizontal-structure">
+                    <section v-if="selected == 'simples'" class="flex-container nowrap" style="align-items: center;">
+                        <section v-if="selected == 'simples'"  v-for="node in arr" class="flex-container nowrap">
+                            <div @click="clickCall(-1, node, $event)" class="flex-node">
+                                <div class="node-text horizontal">{{ node }}</div>
+                            </div>
+                            <div class="vertical-pointers next" @click="clickCall(1, node, $event)" v-if="node != 'null'">
+                                <i class="bi bi-arrow-right center-one-vertical"></i>
+                            </div>
+                        </section>
+                    </section>
+                    <section v-if="selected == 'dupla'" class="flex-container nowrap">
+                        <section v-for="node in arr" class="flex-container nowrap">
+                            <div @click="clickCall(-1, node, $event)" class="flex-node">
+                                <div class="node-text horizontal">
+                                    {{ node != 'null_a' && node != 'null_b' ? node : 'null' }}
+                                </div>
+                            </div>
+                            <div class="d-flex flex-column" v-if="node != 'null_b'">
+                                <div v-if="node != 'null_a'" @click="clickCall(1, node, $event)" class="vertical-pointers small next">
+                                    <i class="bi bi-arrow-right center-two-vertical"></i>
+                                </div>    
+                                <div v-else class="vertical-pointers small nulo"></div>    
+                                <div v-if="this.arr.findIndex(element => element == node) != this.arr.length - 2" @click="clickCall(0, node, $event)" class="vertical-pointers small last">
+                                    <i class="bi bi-arrow-left center-two-vertical"></i>
+                                </div>
+                                <div v-else class="vertical-pointers small nulo"></div>    
+                            </div>
+                        </section>
+                    </section>
+                    <section v-if="selected == 'circular'" class="flex-container nowrap">
+                        <div class="d-flex flex-column">
+                            <div class="d-flex flex-row">
+                                <div :style="{ 'border-top': '6px solid #0060df', 'width': (120 * (listaCircular.count + 1) + 25 * (listaCircular.count + 2) + 96) + 'px' }"></div>
+                            </div>
+                            <div class="d-flex flex-row">
+                                <div class="d-flex flex-column">
+                                    <div class="d-flex flex-row">
+                                        <div class="d-flex flex-column">
+                                            <div class="d-flex flex-row">
+                                                <div :style="{ 'border-left': '6px solid #0060df', 'height': '36px' }"></div>
+                                            </div>
+                                            <div class="d-flex flex-row">
+                                                <div :style="{ 'margin-top': '43px','border-left': '6px solid #d53343', 'height': '32px' }"></div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex flex-column">
+                                            <div class="d-flex flex-row">
+                                                <div :style="{ 'margin-top': '30px', 'border-top': '6px solid #0060df', 'width': '42px' }"></div>
+                                            </div>
+                                            <div class="d-flex flex-row">
+                                                <div :style="{ 'margin-top': '43px', 'border-top': '6px solid #d53343', 'width': '42px' }"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-column" style="margin-top: 7px;">
+                                    <div class="d-flex flex-row">
+                                        <section v-for="node in arr" class="flex-container nowrap">
+    
+                                            <div class="d-flex flex-column" v-if="node == 'head'">
+                                                <div @click="clickCall(3, node, $event)" class="vertical-pointers small next">
+                                                    <i class="bi bi-arrow-right center-two-vertical"></i>
+                                                </div>    
+                                                <div @click="clickCall(2, node, $event)" class="vertical-pointers small last">
+                                                    <i class="bi bi-arrow-left center-two-vertical" ></i>
+                                                </div>
+                                            </div>
+                                            <div @click="clickCall(-1, node, $event)" class="flex-node">
+                                                <div class="node-text horizontal">{{ node }}</div>
+                                            </div>
+                                            <div class="d-flex flex-column">
+                                                <div @click="clickCall(1, node, $event)" class="vertical-pointers small next">
+                                                    <i class="bi bi-arrow-right center-two-vertical"></i>
+                                                </div>
+                                                <div @click="clickCall(0, node, $event)" class="vertical-pointers small last">
+                                                    <i class="bi bi-arrow-left center-two-vertical"></i>
+                                                </div>
+                                            </div>
+                                        </section>
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-column">
+                                    <div class="d-flex flex-row">
+                                        <div class="d-flex flex-column">
+                                            <div class="d-flex flex-row">
+                                                <div :style="{ 'margin-top': '30px', 'border-top': '6px solid #0060df', 'width': '42px' }"></div>
+                                            </div>
+                                            <div class="d-flex flex-row">
+                                                <div :style="{ 'margin-top': '43px', 'border-top': '6px solid #d53343', 'width': '42px' }"></div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex flex-column">
+                                            <div class="d-flex flex-row">
+                                                <div :style="{ 'border-left': '6px solid #0060df', 'height': '36px' }"></div>
+                                            </div>
+                                            <div class="d-flex flex-row">
+                                                <div :style="{ 'margin-top': '43px','border-left': '6px solid #d53343', 'height': '32px' }"></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="d-flex flex-row">
-                            <div :style="{ 'border-top': '6px solid #d53343', 'width': (120 * (listaCircular.count + 1) + 25 * (listaCircular.count + 2) + 96) + 'px' }"></div>
-                        </div>
-                    </div>
-                </section>
-                <section v-if="selected == 'pilha' || selected == 'fila'" class="flex-container nowrap">
-                    <section v-for="node in arr" class="flex-container nowrap">
-                        <div @click="clickCall(-1, node, $event)" class="flex-node">
-                            <div class="node-text horizontal">{{ node }}</div>
-                    </div>
-                        <div class="vertical-pointers">
-                            <div class="ptr-horizontal divisoria"></div>
+                            <div class="d-flex flex-row">
+                                <div :style="{ 'border-top': '6px solid #d53343', 'width': (120 * (listaCircular.count + 1) + 25 * (listaCircular.count + 2) + 96) + 'px' }"></div>
+                            </div>
                         </div>
                     </section>
-                </section>
+                </div>
                 <br>
                 <br>
+                <div class="d-flex flex-row">
+                    <section v-if="selected == 'pilha' || selected == 'fila'" class="flex-container nowrap">
+                        <section v-for="node in arr" class="flex-container nowrap">
+                            <div @click="clickCall(-1, node, $event)" class="flex-node">
+                                <div class="node-text horizontal">{{ node }}</div>
+                        </div>
+                            <div class="vertical-pointers">
+                                <div class="ptr-horizontal divisoria"></div>
+                            </div>
+                        </section>
+                    </section>
+                </div>
                 <div class="row">
                     <div class="card">
                         <h5 class="card-title">{{ selectedNode == -1 ? 'Selecione um nó ou um ponteiro' : ('Valores do ' + selectedType) }}</h5>

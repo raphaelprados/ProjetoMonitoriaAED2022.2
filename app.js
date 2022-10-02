@@ -108,6 +108,7 @@ const app = Vue.createApp({
                     // Verifica se o item pertence à lista ligada
                     if(!p) {
                         this.message = 'O item buscado não pertence à lista!'
+                        return
                     }
                     else if(!ant)
                         head.next = p.next
@@ -121,8 +122,10 @@ const app = Vue.createApp({
                     p = head.next
                     while(p && p.key != this.key) 
                         p = p.next
-                    if(!p)
+                    if(!p) {
                         this.message = "A chave buscada não pertence a esta lista duplamente encadeada"
+                        return
+                    }
                     else {
                         if(p.next)
                             p.next.last = p.last
@@ -134,16 +137,19 @@ const app = Vue.createApp({
                     head = this.listaCircular.head
                     // Busca a chave dentro da lista duplamente encadeada
                     p = head.next
-                    while(p && p.key != this.key) 
+                    while(p != head && p.key != this.key) {
                         p = p.next
-                    if(!p)
+                    }
+                    if(p == head) {
                         this.message = "A chave buscada não pertence à esta lista circular"
+                        return
+                    }
                     else {
                         p.next.last = p.last
                         p.last.next = p.next
                     }
                     this.listaCircular.count--
-                    break;
+                    break
                 case 'fila':
                     head = this.fila.head
                     p = head.last
@@ -161,7 +167,7 @@ const app = Vue.createApp({
                     if(p) 
                         head.next = p.next
                     else 
-                        head.next = null
+                        this.message = "A fila já se encontra vazia! Insira itens para poder deletar"
                     this.fila.count--
                     break
             }

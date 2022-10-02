@@ -157,3 +157,8 @@
     margin: center;
     align-items: center;
 }
+
+.horizontal-structure {
+    align-self: center; 
+    margin-bottom: 2%;
+}
